@@ -24,82 +24,8 @@ This system enables two main features:
 
 > Testable via Swagger UI at [`/docs`](http://127.0.0.1:8000/docs)
 
-### `POST /api/upload`
 
-Upload a JSON file of text chunks to populate the Qdrant collection.  
-Sample format:
-
-```json
-[
-  {
-    "text": "Velvet bean helps fix nitrogen...",
-    "source_doc_id": "AGRO001",
-    "section_heading": "Soil Benefits",
-    "journal": "AgroScience Journal",
-    "publish_year": 2020
-  },
-  ...
-]
-
-### 'POST /api/similarity_search' 
-Returns the most semantically similar chunks to a query.
-
-Request:
-{
-  "query": "What is velvet bean used for?",
-  "k": 3,
-  "min_score": 0.25
-}
-Response:
-{
-  "query": "What is velvet bean used for?",
-  "results": [
-    {
-      "score": 0.785058,
-      "text": null,
-      "source": "extension_brief_mucuna.pdf",
-      "section": "Why grow the velvet bean? (part 1)",
-      "journal": "ILRI extension brief",
-      "year": 2016
-    },
-    {
-      "score": 0.785058,
-      "text": "The velvet bean can be grown for soil fertility, green manure and as a cover crop in conservation agriculture (CA). The velvet bean is a high yielding leguminous forage crop—high in nitrogen (N)/crude protein content. It is usually sown as an N-fixing ley crop or as a green manure crop to improve soil fertility. In the sub-humid regions it can be intercropped with maize to improve soil fertility, maximize grain/herbage yields per unit area and provide mixed crop for hay/silage making. Whether it is grown as a single or mixed crop, the velvet bean provides early dry season grazing or fodder for hay or mixed-crop silage, improving the N content of cereal or grass silage.",
-      "source": "extension_brief_mucuna.pdf",
-      "section": "Why grow the velvet bean? (part 1)",
-      "journal": "ILRI extension brief",
-      "year": 2016
-    },
-    {
-      "score": 0.785058,
-      "text": "The velvet bean can be grown for soil fertility, green manure and as a cover crop in conservation agriculture (CA). The velvet bean is a high yielding leguminous forage crop—high in nitrogen (N)/crude protein content. It is usually sown as an N-fixing ley crop or as a green manure crop to improve soil fertility. In the sub-humid regions it can be intercropped with maize to improve soil fertility, maximize grain/herbage yields per unit area and provide mixed crop for hay/silage making. Whether it is grown as a single or mixed crop, the velvet bean provides early dry season grazing or fodder for hay or mixed-crop silage, improving the N content of cereal or grass silage.",
-      "source": "extension_brief_mucuna.pdf",
-      "section": "Why grow the velvet bean? (part 1)",
-      "journal": "ILRI extension brief",
-      "year": 2016
-    }
-  ]
-}
-
-### 'POST /api/ask_with_context'
-Uses GPT (via OpenAI API) to generate a research-style answer with citations.
-
-Request:
-{
-  "question": "What are the benefits of velvet bean for soil?",
-  "k": 3
-}
-Response:
-{
-  "question": "What are the benefits of velvet bean for soil?",
-  "citations": [
-    "[AgroScience Journal - Soil Benefits]",
-  ],
-  "answer": "Velvet bean has been found to improve soil fertility and provide natural nitrogen fixation. This can result in enhanced nutrient content in the soil, leading to improved plant growth and crop yields. Additionally, velvet bean can help reduce the need for synthetic fertilizers, thereby promoting more sustainable agricultural practices. [AgroScience Journal - Soil Benefits]"
-}
-
-
-## 'Tech Stack'
+## Tech Stack
 
 🧠 OpenAI GPT-3.5 Turbo
 
@@ -111,7 +37,7 @@ Response:
 
 🐳 Docker (for Qdrant container)
 
-## '🛠️ Setup & Run'
+## 🛠️ Setup & Run
 bash
 
 # 1. Create virtual env
@@ -133,17 +59,11 @@ http://127.0.0.1:8000/docs
 ## '📦 Versioning'
 
 v0.1 – Initial folders setup
-
 v0.2 – Ingestion pipeline setupwith embedding and Qdrant Integration
-
 v0.3 – Similarity Search Endpoint
-
 v0.4 – Dockerized Qdrant integration
-
 v0.5 - GPT Answer API Endpoint
-
 v0.6 - Upload Endpoint
-
 v0.7 – Usage count for endpoint tracking
 
 
