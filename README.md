@@ -19,25 +19,6 @@ This system enables two main features:
 
 ---
 
-## 📂 Project Structure
-
-cite-me-if-you-can/
-├── api/
-│ ├── similarity_search.py ← /api/similarity_search
-│ ├── ask_with_context.py ← /api/ask_with_context
-| |-- upload_chunks.py ← /api/upload (for loading chunks)
-│ └── usage_count.py ← /api/usage_count
-├── ingestion/
-│ └── ingest_pipeline.py ← loads JSON chunks into Qdrant
-├── utils/
-│ └── usage_tracker.py ← optional usage logging
-├── main.py ← FastAPI app entrypoint
-├── .env ← OpenAI API key
-├── requirements.txt
-└── README.md
-
-
----
 
 ## 🧪 API Endpoints
 
