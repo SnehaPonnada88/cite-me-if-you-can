@@ -4,3 +4,4 @@ qdrant-client
 openai
 sentence-transformers
 python-dotenv
+python-multipart
