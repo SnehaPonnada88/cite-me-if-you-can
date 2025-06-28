@@ -3,6 +3,10 @@ from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Filter, SearchRequest
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from utils.usage_tracker import increment_usage
 
 # Setup
 router = APIRouter()
@@ -19,6 +23,7 @@ class SearchQuery(BaseModel):
 
 @router.post("/api/similarity_search")
 def similarity_search(payload: SearchQuery):
+    increment_usage("similarity_search")
     vector = model.encode(payload.query).tolist()
 
     results = qdrant.search(

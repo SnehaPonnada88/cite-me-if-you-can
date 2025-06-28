@@ -5,6 +5,9 @@ from qdrant_client import QdrantClient
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from utils.usage_tracker import increment_usage
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -22,6 +25,7 @@ class AskRequest(BaseModel):
 
 @router.post("/api/ask_with_context")
 def ask_with_context(payload: AskRequest):
+    increment_usage("ask_with_context")
     vector = model.encode(payload.question).tolist()
 
     results = qdrant.search(
