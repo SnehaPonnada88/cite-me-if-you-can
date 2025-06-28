@@ -1,0 +1,11 @@
+Story	Task	Estimate min (hr)	Estimate max (hr)	Actual	Comment
+Setup	Create GitHub repo and clone project	0.25	0.5		
+Setup	Create folder structure and initial commit	0.25	0.5		
+Ingestion	Write pseudocode for ingestion logic	1	2		
+Ingestion	Embed chunks with sentence-transformers	1	2		
+Ingestion	Store chunks with metadata in Qdrant	1	2		
+API	Create upload API endpoint	1	2		
+API	Create similarity search API endpoint	1	2		
+API	Create journal fetch API endpoint	0.5	1.5		
+Demo	Record Loom video and test API flow	0.5	1		
+Docs	Write README and explain vector DB choice	0.5	1		
