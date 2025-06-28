@@ -12,7 +12,7 @@ class IngestionPipeline:
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
         self.collection_name = collection_name
         self.vector_size = self.model.get_sentence_embedding_dimension()
-        self.qdrant = QdrantClient(":memory:")  # You can replace with host/port config later
+        self.qdrant = QdrantClient(host="localhost", port=6333)
 
         # Create collection (if not exists)
         self.qdrant.recreate_collection(

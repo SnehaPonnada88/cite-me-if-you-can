@@ -7,7 +7,7 @@ from qdrant_client.http.models import Filter, SearchRequest
 # Setup
 router = APIRouter()
 model = SentenceTransformer("all-MiniLM-L6-v2")
-qdrant = QdrantClient(":memory:")  # Use localhost if using real server
+qdrant = QdrantClient(host="localhost", port=6333)
 collection_name = "journal_chunks"
 
 # Request schema
