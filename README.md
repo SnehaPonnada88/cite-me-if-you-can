@@ -19,12 +19,6 @@ This system enables two main features:
 
 ---
 
-
-## 🧪 API Endpoints
-
-> Testable via Swagger UI at [`/docs`](http://127.0.0.1:8000/docs)
-
-
 ## Tech Stack
 
 🧠 OpenAI GPT-3.5 Turbo
@@ -40,30 +34,36 @@ This system enables two main features:
 ## 🛠️ Setup & Run
 bash
 
-# 1. Create virtual env
+1. Create virtual env
 conda create -n cite-ai python=3.10
 conda activate cite-ai
 
-# 2. Install dependencies
+2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Run Qdrant in Docker
+3. Run Qdrant in Docker
 docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant
 
-# 4. Run the FastAPI app
+4. Run the FastAPI app
 uvicorn main:app --reload
 
-# 5. Open the Swagger UI
+5. Open the Swagger UI
 http://127.0.0.1:8000/docs
 
-## '📦 Versioning'
+## 📦 Versioning
 
 v0.1 – Initial folders setup
+
 v0.2 – Ingestion pipeline setupwith embedding and Qdrant Integration
+
 v0.3 – Similarity Search Endpoint
+
 v0.4 – Dockerized Qdrant integration
+
 v0.5 - GPT Answer API Endpoint
+
 v0.6 - Upload Endpoint
+
 v0.7 – Usage count for endpoint tracking
 
 
