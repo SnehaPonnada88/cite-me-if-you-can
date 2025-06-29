@@ -1,55 +1,69 @@
-import json
+import fitz  # PyMuPDF
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
-from qdrant_client.models import PointStruct, Distance, VectorParams, CollectionStatus
+from qdrant_client.models import PointStruct, Distance, VectorParams
 from uuid import uuid4
 
-
 class IngestionPipeline:
-    def __init__(self, data_path, collection_name="journal_chunks"):
-        self.data_path = Path(data_path)
+    def __init__(self, upload_dir="uploads", collection_name="journal_chunks"):
+        self.upload_dir = Path(upload_dir)
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
         self.collection_name = collection_name
         self.vector_size = self.model.get_sentence_embedding_dimension()
         self.qdrant = QdrantClient(host="localhost", port=6333)
 
-        # Create collection (if not exists)
+        # Create or recreate collection
         self.qdrant.recreate_collection(
             collection_name=self.collection_name,
             vectors_config=VectorParams(size=self.vector_size, distance=Distance.COSINE)
         )
 
-    def load_chunks(self):
-        """Load pre-chunked sample data from JSON file"""
-        with open(self.data_path, "r", encoding="utf-8") as f:
-            return json.load(f)
+    def extract_text(self, pdf_path):
+        doc = fitz.open(pdf_path)
+        return "\n".join(page.get_text() for page in doc)
+
+    def chunk_text(self, text, max_tokens=300):
+        paragraphs = text.split("\n\n")
+        chunks = []
+        current = ""
+        for para in paragraphs:
+            if len(current.split()) + len(para.split()) < max_tokens:
+                current += " " + para
+            else:
+                chunks.append(current.strip())
+                current = para
+        if current:
+            chunks.append(current.strip())
+        return chunks
 
     def process_and_store(self):
-        chunks = self.load_chunks()
-        texts = [chunk["text"] for chunk in chunks]
-        embeddings = self.model.encode(texts)
+        all_points = []
+        for file in self.upload_dir.glob("*.pdf"):
+            print(f"📄 Processing: {file.name}")
+            text = self.extract_text(file)
+            chunks = self.chunk_text(text)
+            embeddings = self.model.encode(chunks)
 
-        points = []
-        for chunk, vector in zip(chunks, embeddings):
-            point_id = str(uuid4())
-            metadata = {
-                "id": chunk["id"],
-                "source_doc_id": chunk["source_doc_id"],
-                "section_heading": chunk["section_heading"],
-                "journal": chunk["journal"],
-                "publish_year": chunk["publish_year"],
-                "usage_count": chunk["usage_count"],
-                "attributes": chunk["attributes"],
-                "link": chunk.get("link", "")
-            }
+            for i, (chunk, vector) in enumerate(zip(chunks, embeddings)):
+                chunk_id = str(uuid4())
+                metadata = {
+                    "id": chunk_id,
+                    "source_doc_id": file.stem,
+                    "section_heading": f"Chunk {i+1}",
+                    "journal": "Unknown",           # Could later be inferred
+                    "publish_year": "2024",         # Default or extracted
+                    "usage_count": 0,
+                    "attributes": {}
+                }
+                all_points.append(PointStruct(id=chunk_id, vector=vector.tolist(), payload=metadata))
 
-            points.append(PointStruct(id=point_id, vector=vector.tolist(), payload=metadata))
-
-        self.qdrant.upsert(collection_name=self.collection_name, points=points)
-        print(f"✅ Ingested {len(points)} chunks into Qdrant collection: {self.collection_name}")
-
+        if all_points:
+            self.qdrant.upsert(collection_name=self.collection_name, points=all_points)
+            print(f"✅ Ingested {len(all_points)} chunks into Qdrant collection: {self.collection_name}")
+        else:
+            print("⚠️ No new files or valid content found.")
 
 if __name__ == "__main__":
-    pipeline = IngestionPipeline(data_path="data/Sample_chunks.json")
+    pipeline = IngestionPipeline(upload_dir="uploads")
     pipeline.process_and_store()

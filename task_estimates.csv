@@ -7,6 +7,7 @@ Similarity API,Implement /api/similarity_search endpoint,1,2,1.5,Returns top-k s
 GPT Integration,Add /api/ask_with_context using OpenAI GPT,1.5,2.5,1.5,GPT answers with citations
 Upload Integration,Add /api/upload ,1,2,1,Allows user to upload their own json files
 Usage Count,Add /api/usage-count ,1,2,1,A basic api to track analytics
+Journal ID,Add /api/journal_metadata,1,2,1,An API which returns all metadata based on the journal ID
 Config,"Handle .env securely, remove keys from commits",0.5,1,0.5,"Used .gitignore, removed secret"
 Versioning,Maintain Git tags and commit logs,0.25,0.5,0.5,Tagged from v0.1 up to v0.7
 Recording,Prepare for Loom video demo,0.5,1,0.5,A walk through of Swagger & backend
