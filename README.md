@@ -19,110 +19,7 @@ This system enables two main features:
 
 ---
 
-<<<<<<< HEAD
-## 📂 Project Structure
-
-cite-me-if-you-can/
-├── api/
-│ ├── similarity_search.py ← /api/similarity_search
-│ ├── ask_with_context.py ← /api/ask_with_context
-| |-- upload_chunks.py ← /api/upload (for loading chunks)
-│ └── usage_count.py ← /api/usage_count
-├── ingestion/
-│ └── ingest_pipeline.py ← loads JSON chunks into Qdrant
-├── utils/
-│ └── usage_tracker.py ← optional usage logging
-├── main.py ← FastAPI app entrypoint
-├── .env ← OpenAI API key
-├── requirements.txt
-└── README.md
-
-
----
-
-## 🧪 API Endpoints
-
-> Testable via Swagger UI at [`/docs`](http://127.0.0.1:8000/docs)
-
-### `POST /api/upload`
-
-Upload a JSON file of text chunks to populate the Qdrant collection.  
-Sample format:
-
-```json
-[
-  {
-    "text": "Velvet bean helps fix nitrogen...",
-    "source_doc_id": "AGRO001",
-    "section_heading": "Soil Benefits",
-    "journal": "AgroScience Journal",
-    "publish_year": 2020
-  },
-  ...
-]
-
-### 'POST /api/similarity_search' 
-Returns the most semantically similar chunks to a query.
-
-Request:
-{
-  "query": "What is velvet bean used for?",
-  "k": 3,
-  "min_score": 0.25
-}
-Response:
-{
-  "query": "What is velvet bean used for?",
-  "results": [
-    {
-      "score": 0.785058,
-      "text": null,
-      "source": "extension_brief_mucuna.pdf",
-      "section": "Why grow the velvet bean? (part 1)",
-      "journal": "ILRI extension brief",
-      "year": 2016
-    },
-    {
-      "score": 0.785058,
-      "text": "The velvet bean can be grown for soil fertility, green manure and as a cover crop in conservation agriculture (CA). The velvet bean is a high yielding leguminous forage crop—high in nitrogen (N)/crude protein content. It is usually sown as an N-fixing ley crop or as a green manure crop to improve soil fertility. In the sub-humid regions it can be intercropped with maize to improve soil fertility, maximize grain/herbage yields per unit area and provide mixed crop for hay/silage making. Whether it is grown as a single or mixed crop, the velvet bean provides early dry season grazing or fodder for hay or mixed-crop silage, improving the N content of cereal or grass silage.",
-      "source": "extension_brief_mucuna.pdf",
-      "section": "Why grow the velvet bean? (part 1)",
-      "journal": "ILRI extension brief",
-      "year": 2016
-    },
-    {
-      "score": 0.785058,
-      "text": "The velvet bean can be grown for soil fertility, green manure and as a cover crop in conservation agriculture (CA). The velvet bean is a high yielding leguminous forage crop—high in nitrogen (N)/crude protein content. It is usually sown as an N-fixing ley crop or as a green manure crop to improve soil fertility. In the sub-humid regions it can be intercropped with maize to improve soil fertility, maximize grain/herbage yields per unit area and provide mixed crop for hay/silage making. Whether it is grown as a single or mixed crop, the velvet bean provides early dry season grazing or fodder for hay or mixed-crop silage, improving the N content of cereal or grass silage.",
-      "source": "extension_brief_mucuna.pdf",
-      "section": "Why grow the velvet bean? (part 1)",
-      "journal": "ILRI extension brief",
-      "year": 2016
-    }
-  ]
-}
-
-### 'POST /api/ask_with_context'
-Uses GPT (via OpenAI API) to generate a research-style answer with citations.
-
-Request:
-{
-  "question": "What are the benefits of velvet bean for soil?",
-  "k": 3
-}
-Response:
-{
-  "question": "What are the benefits of velvet bean for soil?",
-  "citations": [
-    "[AgroScience Journal - Soil Benefits]",
-  ],
-  "answer": "Velvet bean has been found to improve soil fertility and provide natural nitrogen fixation. This can result in enhanced nutrient content in the soil, leading to improved plant growth and crop yields. Additionally, velvet bean can help reduce the need for synthetic fertilizers, thereby promoting more sustainable agricultural practices. [AgroScience Journal - Soil Benefits]"
-}
-
-
-## 'Tech Stack'
-=======
 ## Tech Stack
->>>>>>> 2baa7aff2604700ade639f01d3f8211e0513c9ad
 
 🧠 OpenAI GPT-3.5 Turbo
 
@@ -134,49 +31,31 @@ Response:
 
 🐳 Docker (for Qdrant container)
 
-<<<<<<< HEAD
-## '🛠️ Setup & Run'
-bash
-
-# 1. Create virtual env
-conda create -n cite-ai python=3.10
-conda activate cite-ai
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Run Qdrant in Docker
-docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant
-
-# 4. Run the FastAPI app
-uvicorn main:app --reload
-
-# 5. Open the Swagger UI
-http://127.0.0.1:8000/docs
-
-## '📦 Versioning'
 =======
 ## 🛠️ Setup & Run
 bash
 
 1. Create virtual env
-conda create -n cite-ai python=3.10
-conda activate cite-ai
+   
+conda create -n vir_env
+conda activate vir_env
 
-2. Install dependencies
+3. Install dependencies
+   
 pip install -r requirements.txt
 
-3. Run Qdrant in Docker
+4. Run Qdrant in Docker
+   
 docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant
 
-4. Run the FastAPI app
-uvicorn main:app --reload
+5. Run the FastAPI app
+   
+python -m uvicorn main:app --reload
 
-5. Open the Swagger UI
+6. Open the Swagger UI
 http://127.0.0.1:8000/docs
 
 ## 📦 Versioning
->>>>>>> 2baa7aff2604700ade639f01d3f8211e0513c9ad
 
 v0.1 – Initial folders setup
 
@@ -192,5 +71,5 @@ v0.6 - Upload Endpoint
 
 v0.7 – Usage count for endpoint tracking
 
-
+v0.8 - Implemented GET journal_id to return metadata
 
