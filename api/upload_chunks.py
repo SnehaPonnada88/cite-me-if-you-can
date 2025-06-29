@@ -1,45 +1,53 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
-from sentence_transformers import SentenceTransformer
-from qdrant_client import QdrantClient
-from qdrant_client.http.models import PointStruct, VectorParams, Distance
-import uuid
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException
+from fastapi.responses import JSONResponse
 import json
+import requests
+import os
+import sys
+from tempfile import NamedTemporaryFile
+
+# Add ingestion directory to sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from ingestion.ingest_pipeline import IngestionPipeline
 
 router = APIRouter()
-model = SentenceTransformer("all-MiniLM-L6-v2")
-qdrant = QdrantClient(host="localhost", port=6333)
-collection_name = "journal_chunks"
-vector_size = 384
 
-# Optional: create collection if it doesn't exist
-if not qdrant.collection_exists(collection_name):
-    qdrant.create_collection(
-        collection_name=collection_name,
-        vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE)
-    )
+@router.put("/api/upload")
+async def upload_json_file(
+    schema_version: str = Form(...),
+    file: UploadFile = File(None),
+    file_url: str = Form(None)
+):
+    if not schema_version:
+        raise HTTPException(status_code=400, detail="schema_version is required")
 
-@router.post("/api/upload")
-async def upload_json_file(file: UploadFile = File(...)):
-    if not file.filename.endswith(".json"):
-        raise HTTPException(status_code=400, detail="Only JSON files are allowed.")
+    # Get file contents from upload or URL
+    if file:
+        contents = await file.read()
+    elif file_url:
+        response = requests.get(file_url)
+        if response.status_code != 200:
+            raise HTTPException(status_code=400, detail="Failed to fetch file from URL")
+        contents = response.content
+    else:
+        raise HTTPException(status_code=400, detail="Either file or file_url must be provided.")
 
-    contents = await file.read()
+    # Validate JSON structure
     try:
-        chunks = json.loads(contents)
-    except json.JSONDecodeError:
-        raise HTTPException(status_code=400, detail="Invalid JSON file.")
+        data = json.loads(contents.decode("utf-8"))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid JSON: {str(e)}")
 
-    points = []
-    for chunk in chunks:
-        vector = model.encode(chunk["text"]).tolist()
-        points.append(
-            PointStruct(
-                id=str(uuid.uuid4()),
-                vector=vector,
-                payload=chunk  # Payload contains all metadata (journal, section, etc.)
-            )
-        )
+    # Save to a temporary file and pass to pipeline
+    with NamedTemporaryFile("w+", suffix=".json", delete=False) as temp_file:
+        json.dump(data, temp_file)
+        temp_file_path = temp_file.name
 
-    qdrant.upsert(collection_name=collection_name, points=points)
+    # Run ingestion
+    pipeline = IngestionPipeline(data_path=temp_file_path)
+    pipeline.process_and_store()
 
-    return {"status": "success", "uploaded": len(points)}
+    return JSONResponse(
+        status_code=202,
+        content={"uploaded": len(data), "schema_version": schema_version}
+    )
