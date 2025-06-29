@@ -1,11 +1,12 @@
-Story	Task	Estimate min (hr)	Estimate max (hr)	Actual	Comment
-Setup	Create GitHub repo and clone project	0.25	0.5		
-Setup	Create folder structure and initial commit	0.25	0.5		
-Ingestion	Write pseudocode for ingestion logic	1	2		
-Ingestion	Embed chunks with sentence-transformers	1	2		
-Ingestion	Store chunks with metadata in Qdrant	1	2		
-API	Create upload API endpoint	1	2		
-API	Create similarity search API endpoint	1	2		
-API	Create journal fetch API endpoint	0.5	1.5		
-Demo	Record Loom video and test API flow	0.5	1		
-Docs	Write README and explain vector DB choice	0.5	1		
+"Story	",Task,Estimate max (hr),Estimate min (hr),Actual,Comment
+Setup Project,Create GitHub repo and virtual environment,0.25,0.5,0.25,"Repo created, Git + Anaconda configured"
+Ingestion,Build ingestion pipeline to load JSON chunks into Qdrant,1,2,2,Used SentenceTransformer + Qdrant client
+Embedding,Generate embeddings and attach metadata,1,2,1,"Used all-MiniLM-L6-v2, encoded chunks"
+Vector DB,Initialize Qdrant (Docker) and verify upload,1,1.5,1,Qdrant running on localhost:6333
+Similarity API,Implement /api/similarity_search endpoint,1,2,1.5,Returns top-k similar results
+GPT Integration,Add /api/ask_with_context using OpenAI GPT,1.5,2.5,1.5,GPT answers with citations
+Upload Integration,Add /api/upload ,1,2,1,Allows user to upload their own json files
+Usage Count,Add /api/usage-count ,1,2,1,A basic api to track analytics
+Config,"Handle .env securely, remove keys from commits",0.5,1,0.5,"Used .gitignore, removed secret"
+Versioning,Maintain Git tags and commit logs,0.25,0.5,0.5,Tagged from v0.1 up to v0.7
+Recording,Prepare for Loom video demo,0.5,1,0.5,A walk through of Swagger & backend
