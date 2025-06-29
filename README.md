@@ -192,5 +192,5 @@ v0.6 - Upload Endpoint
 
 v0.7 – Usage count for endpoint tracking
 
-
+v0.8 - Implemented GET journal_id to return metadata
 
