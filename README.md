@@ -36,19 +36,23 @@ This system enables two main features:
 bash
 
 1. Create virtual env
-conda create -n cite-ai python=3.10
-conda activate cite-ai
+   
+conda create -n vir_env
+conda activate vir_env
 
-2. Install dependencies
+3. Install dependencies
+   
 pip install -r requirements.txt
 
-3. Run Qdrant in Docker
+4. Run Qdrant in Docker
+   
 docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant
 
-4. Run the FastAPI app
-uvicorn main:app --reload
+5. Run the FastAPI app
+   
+python -m uvicorn main:app --reload
 
-5. Open the Swagger UI
+6. Open the Swagger UI
 http://127.0.0.1:8000/docs
 
 ## 📦 Versioning
