@@ -20,7 +20,6 @@ This system enables two main features:
 ---
 
 ## Tech Stack
->>>>>>> 2baa7aff2604700ade639f01d3f8211e0513c9ad
 
 🧠 OpenAI GPT-3.5 Turbo
 
@@ -53,7 +52,6 @@ uvicorn main:app --reload
 http://127.0.0.1:8000/docs
 
 ## 📦 Versioning
->>>>>>> 2baa7aff2604700ade639f01d3f8211e0513c9ad
 
 v0.1 – Initial folders setup
 
